@@ -54,6 +54,7 @@ public:
         nid_t  src;           /*!< Node ID of source */
         int    vn;            /*!< Virtual network of packet */
         size_t size_in_bits;  /*!< Size of packet in bits */
+	//	bool track;
         bool   head;          /*!< True if this is the head of a stream */
         bool   tail;          /*!< True if this is the tail of a steram */
         
@@ -106,13 +107,13 @@ public:
         /** Constructor */
         Request() :
             dest(0), src(0), size_in_bits(0), head(false), tail(false), payload(NULL),
-            trace(NONE), traceID(0)
+            trace(NONE), traceID(0), track(false)
         {}
 
-        Request(nid_t dest, nid_t src, size_t size_in_bits,
+        Request(nid_t dest, nid_t src, size_t size_in_bits, 
                 bool head, bool tail, Event* payload = NULL) :
             dest(dest), src(src), size_in_bits(size_in_bits), head(head), tail(tail), payload(payload),
-            trace(NONE), traceID(0)
+            trace(NONE), traceID(0), track(false)
         {
         }
 
@@ -133,6 +134,9 @@ public:
         void setTraceType(TraceType type) {trace = type;}
         int getTraceID() {return traceID;}
         TraceType getTraceType() {return trace;}
+
+		void setTrack(bool doTrack) {track = doTrack;}
+		bool getTrack(){ return track; }
         
         void serialize_order(SST::Core::Serialization::serializer &ser) override {
             ser & dest;
@@ -144,11 +148,13 @@ public:
             ser & payload;
             ser & trace;
             ser & traceID;
+			ser & track;
         }
         
     protected:
         TraceType trace;
         int traceID;
+		bool track;
 
     private:
 
